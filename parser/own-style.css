@@ -1,0 +1,64 @@
+/**/
+.header{
+	width:100%;
+	height:60px;
+	position:fixed;
+	left:0;
+	top:0;
+	background-color:#64b084;
+	z-index:999;
+}
+
+.footer{
+	width:100%;
+	height:30px;
+	position:fixed;
+	left:0;
+	bottom:0;
+	background-color:#64b084;
+	z-index:999;
+}
+
+.labelCell{
+	width: 30px;
+	height: 30px;
+	margin: 2px;
+	background-color: #F0E9D1;
+	float: left;
+	border-radius: 8%;
+	border: 2px solid #abbaba;
+	color:#b35d5d;
+	font-weight:bold;
+	font-size:14px;
+}
+
+.airlineText{
+	font-size: 26px;
+	font-weight: bold;
+	color: #6faec3;
+}
+
+.airlineDataHeader{
+	width:25%;
+	color:white;
+	background-color:#9575cd !important; 
+}
+
+.parameterName{
+	color:#148964;
+	width:25%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;	
+	font-size:14px;
+}
+
+.parameterValue{
+	color:#5b6e6b;
+	width:25%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight : bold;
+	font-size:14px;
+}
+
+table th, table td{
+	padding:2px;
+}
