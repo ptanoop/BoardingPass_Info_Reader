@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="boarding_pass_parser.js"></script>
 		<script type="text/javascript" src="js_libs/moment.min.js"></script>
 		<script type="text/javascript" src="international_airports.js"></script>
+		<script type="text/javascript" src="international_airlines.js"></script>
 		<!-- framework css -->
 		<!--[if gt IE 9]><!-->
 		<link type="text/css" rel="stylesheet" href="styles/groundwork.css">
@@ -52,7 +53,7 @@
 			var tdString = "<td class='airlineDataHeader'>"+headerName+"</td><td class='airlineDataHeader'></td>;<td class='airlineDataHeader'></td><td class='airlineDataHeader'></td>;";
 			for(var i = 0; i < keys.length; i++){
 				var val = airlineData[keys[i]];
-				if(typeof val != 'object'){
+				if(typeof val != 'object'){					
 					tdString = tdString + "<td class='parameterName'>"+ makeParameterText(keys[i]) +"</td><td class='parameterValue'>" + airlineData[keys[i]] + "</td>;";
 				}
 				else{				
@@ -92,10 +93,9 @@
 		$('document').ready(function(){
 		
 			console.log(makeParameterText("secondNonConsecutiveBaggageTagLPN"));
-			
-		
+					
 			//var airlineCode = 'M1ALNASSER/LUBNAABDU  EM3X23F DXBISTEK 0123 033Y037C0262 366>5322MO6033BEK 0176938082002                          2A1761610270374                         30K ^1';
-			var airlineCode = 'M2STONE/JACOB         EDCEZUB PERDXBEK 0421 163Y045C0221 136>20B1WW2163BEK 251762146276875 1                      DCEZUB DXBDAREK 0725 164Y041F0216 127251762146276875 1                      ';
+			var airlineCode = 'M2STONE/JACOB         EDCEZUB PERDXBEK 0421 163Y045C0221 136>20B1WW2163BEK 251762146276875 1                      DCEZUB DXBDAREK 0725 164Y041F0216 127251762146276875 1                      ';			
 			var airlineCodeChar = airlineCode.length;
 			var bpass = BoardingPassParser.parseBoardingPass(airlineCode);
 			var bdTable = tableize(bpass.parsedBoardingPassData);
@@ -103,18 +103,18 @@
 			console.log(JSON.stringify(bpass));
 			console.log(airlineCode);
 			console.log(airlineCodeChar);
-			
-			
-			
+									
 			//$("#parsedData").text(JSON.stringify(bpass));
 			document.getElementById('parsedDiv').innerHTML = bdTable;
-			
+			$('#boardingPassTextDiv').append("<label style='height:30px;float:left;'>[</label>");
 			for(var i = 0; i < airlineCodeChar; i++){
+				$('#boardingPassTextDiv').append("<label style='height:30px;float:left;font-weight:bold'>" +  airlineCode[i] + "</label>");
 				var labelElem = document.createElement("label"); 
 				labelElem.setAttribute("class", "labelCell");
 				labelElem.textContent  = airlineCode[i];
 				document.getElementById("draw_div_one").appendChild(labelElem); 
 			}
+			$('#boardingPassTextDiv').append("<label style='height:30px;float:left;'>]</label>");
 			
 		});
 		
@@ -127,38 +127,21 @@
 					M1ALNASSER/LUBNAABDU  EM3X23F DXBISTEK 0123 033Y037C0262 366>5322MO6033BEK 0176938082002                          2A1761610270374                         30K ^1
 				</label> -->
 	
-	<body>
-		
-		<div class="row" style="position:relative;">			
+	<body>		
+		<div class="row" style="position:relative;">						
 			<div class="one eighth"></div>
-			<div class="six eighths">
-				
-					<h4 class="box museo-slab" style='background-color:#64b084;color:#e4ea84;font-size:30px;font-weight:bold;border:0px;height:60px;line-height:40px'>Boarding Pass Information</h4>
-				
-					
-				<textarea  rows="5" cols="100" id="airlineText" name="airlineText"  style='margin-left:5px;font-size:26px;font-weight:bold;height:200px !important;resize: none;'></textarea>		
-				
-				<div class="row" style="text-align:right;padding-top:10px;padding-bottom:20px">
-					<a class="blue button" href="#"><i class="icon-wrench"></i> Parse</a>
-				</div>	
-				
-				<div id="draw_div_one" class="row" style="margin-bottom:50px">
-				
+			<div class="six eighths">				
+				<div class="row" style="height:100px;background-color:#77c699;margin-bottom:30px;padding-top:20px;padding-left:20px;font-size:40px;color:white">
+					Boarding Pass Parser Example
 				</div>
-				
-				<div id='parsedDiv' class="row" style="padding-top:10px;padding-bottom:20px;">
-					
-				</div>
-				
-				<br>
-				
-				
+				<div id='boardingPassTextDiv' style='height:60px;margin-bottom:30px'></div>				
+				<div id="draw_div_one" class="row" style="margin-bottom:30px"></div>				
+				<div id='parsedDiv' class="row" style="padding-top:10px;padding-bottom:20px;"></div>				
+				<br>								
 			</div>	
 			<div class="one eighth"></div>
 		</div>
 		<br><br>
-		<div class="row">
-		
-		</div>
+		<div class="row"></div>
 	</body>
 </html>

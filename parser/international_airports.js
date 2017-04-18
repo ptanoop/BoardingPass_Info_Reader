@@ -30150,3 +30150,18 @@ var international_airports = [{
 			"name": "Zanesville"
 		}
 	];
+
+	var InternationalAirports = (function(){
+		return {
+			resolveAirport : function(code){
+				for(var i = 0; i < international_airports.length; i++){
+					if(code == international_airports[i].code){
+						return international_airports[i].name;
+					}
+				}
+				return null;
+			}
+		}				
+	})();
+
+	
