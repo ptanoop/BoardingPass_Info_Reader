@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<title>Explain Boarding Pass Resolution 792</title>
+		<!-- Modernizr -->
+		<script type="text/javascript" src="js_libs/jquery-1.10.2.min.js"></script>	
+		<script type="text/javascript" src="js_libs/modernizr-2.6.2.min.js"></script>	
+		<script type="text/javascript" src="js_libs/groundwork.all.js"></script>	
+		<script type="text/javascript" src="boarding_pass_parser.js"></script>
+		<script type="text/javascript" src="js_libs/moment.min.js"></script>
+		<script type="text/javascript" src="international_airports.js"></script>
+		<script type="text/javascript" src="international_airlines.js"></script>
+		<!-- framework css -->
+		<!--[if gt IE 9]><!-->
+		<link type="text/css" rel="stylesheet" href="styles/groundwork.css">
+		<link type="text/css" rel="stylesheet" href="own-style.css">
+		<!--<![endif]-->
+		<!--[if lte IE 9]>
+		<link type="text/css" rel="stylesheet" href="/css/groundwork-core.css">
+		<link type="text/css" rel="stylesheet" href="/css/groundwork-type.css">
+		<link type="text/css" rel="stylesheet" href="/css/groundwork-ui.css">
+		<link type="text/css" rel="stylesheet" href="/css/groundwork-anim.css">
+		<link type="text/css" rel="stylesheet" href="/css/groundwork-ie.css">
+		<![endif]-->	
+	</head>
+	<script lang="javascript"> 
+		
+		function makeParameterText(parameter){
+			var parameterText = "";
+			if(parameter!=null && typeof parameter=="string"){	
+				var previousCharIsUpper = false;	
+				for(var i = 0 ;i < parameter.length; i++){
+					if(parameter[i] == parameter[i].toUpperCase()){
+						if(previousCharIsUpper)
+							parameterText = parameterText + parameter[i].toUpperCase(); 
+						else	
+							parameterText = parameterText + " " + parameter[i].toUpperCase(); 
+						previousCharIsUpper = true;
+					}
+					else{
+						parameterText = parameterText + parameter[i]; 
+						previousCharIsUpper = false;
+					}				
+					if(i==0)parameterText = parameter[0].toUpperCase(); 										
+				}				
+			}
+			return parameterText;
+		}
+		
+		function splitToTds(airlineData, headerName){			
+			var keys = Object.keys(airlineData);
+			var tdString = "<td class='airlineDataHeader'>"+headerName+"</td><td class='airlineDataHeader'></td>;<td class='airlineDataHeader'></td><td class='airlineDataHeader'></td>;";
+			for(var i = 0; i < keys.length; i++){
+				var val = airlineData[keys[i]];
+				if(typeof val != 'object'){					
+					tdString = tdString + "<td class='parameterName'>"+ makeParameterText(keys[i]) +"</td><td class='parameterValue'>" + airlineData[keys[i]] + "</td>;";
+				}
+				else{				
+					if(val instanceof Array){
+						var flightSegments = val;
+						for(var j = 0; j < flightSegments.length; j++)
+							tdString = tdString + splitToTds(airlineData[keys[i]][j],"Flight Segment");
+					}
+					else
+						tdString = tdString + splitToTds(airlineData[keys[i]],"Flight Segment");					
+				}				
+			}
+			return tdString;
+		}
+		
+		function tableize(airlineData){
+			var tds = splitToTds(airlineData, "Boarding Pass Information");
+			var airlineTable = "";
+			var tdArr = tds.split(";");
+			console.log(tdArr);
+			var loop = 0;
+			for(; loop < tdArr.length ; loop+=2){				
+				var firstCol = (tdArr[loop]!="" && tdArr[loop]!=null)?tdArr[loop]:"<td>&nbsp;</td><td>&nbsp;</td>";
+				var secCol 	 = (tdArr[loop+1]!="" && tdArr[loop+1]!=null)?tdArr[loop+1]:"<td>&nbsp;</td><td>&nbsp;</td>";
+				console.log("F : "+firstCol)
+				console.log("S : "+secCol)
+				airlineTable = airlineTable + "<tr>"+ firstCol + secCol + "</tr>";
+			}
+			//if(loop == tdArr.length)
+			airlineTable = "<table>" + airlineTable + "</table>";
+			console.log(airlineTable);
+			return airlineTable;
+		}
+		
+		
+	
+		$('document').ready(function(){
+		
+			console.log(makeParameterText("secondNonConsecutiveBaggageTagLPN"));
+					
+			//var airlineCode = 'M1ALNASSER/LUBNAABDU  EM3X23F DXBISTEK 0123 033Y037C0262 366>5322MO6033BEK 0176938082002                          2A1761610270374                         30K ^1';
+			var airlineCode = 'M2STONE/JACOB         EDCEZUB PERDXBEK 0421 163Y045C0221 136>20B1WW2163BEK 251762146276875 1                      DCEZUB DXBDAREK 0725 164Y041F0216 127251762146276875 1                      ';			
+			var airlineCodeChar = airlineCode.length;
+			var bpass = BoardingPassParser.parseBoardingPass(airlineCode);
+			var bdTable = tableize(bpass.parsedBoardingPassData);
+			console.log(bdTable);
+			console.log(JSON.stringify(bpass));
+			console.log(airlineCode);
+			console.log(airlineCodeChar);
+									
+			//$("#parsedData").text(JSON.stringify(bpass));
+			document.getElementById('parsedDiv').innerHTML = bdTable;
+			$('#boardingPassTextDiv').append("<label style='height:30px;float:left;'>[</label>");
+			for(var i = 0; i < airlineCodeChar; i++){
+				$('#boardingPassTextDiv').append("<label style='height:30px;float:left;font-weight:bold'>" +  airlineCode[i] + "</label>");
+				var labelElem = document.createElement("label"); 
+				labelElem.setAttribute("class", "labelCell");
+				labelElem.textContent  = airlineCode[i];
+				document.getElementById("draw_div_one").appendChild(labelElem); 
+			}
+			$('#boardingPassTextDiv').append("<label style='height:30px;float:left;'>]</label>");
+			
+		});
+		
+		
+		
+		//#98ecec
+	</script>
+	
+	<!-- <label class="airlineText">				
+					M1ALNASSER/LUBNAABDU  EM3X23F DXBISTEK 0123 033Y037C0262 366>5322MO6033BEK 0176938082002                          2A1761610270374                         30K ^1
+				</label> -->
+	
+	<body>		
+		<div class="row" style="position:relative;">						
+			<div class="one eighth"></div>
+			<div class="six eighths">				
+				<div class="row" style="height:100px;background-color:#77c699;margin-bottom:30px;padding-top:20px;padding-left:20px;font-size:40px;color:white">
+					Boarding Pass Parser Example
+				</div>
+				<div id='boardingPassTextDiv' style='height:60px;margin-bottom:30px'></div>				
+				<div id="draw_div_one" class="row" style="margin-bottom:30px"></div>				
+				<div id='parsedDiv' class="row" style="padding-top:10px;padding-bottom:20px;"></div>				
+				<br>								
+			</div>	
+			<div class="one eighth"></div>
+		</div>
+		<br><br>
+		<div class="row"></div>
+	</body>
+</html>
